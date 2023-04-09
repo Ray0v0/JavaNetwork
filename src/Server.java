@@ -1,4 +1,5 @@
 import java.io.*;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -8,21 +9,24 @@ public class Server {
     static GUI_Server gui;
     static OutputStream output;
     static BufferedWriter writer;
-    static String userName = "Server";
+    static String userName = "RayOvO";
     public static void main(String[] args) throws IOException {
         gui = new GUI_Server();
         gui.go();
         ServerSocket ss = new ServerSocket(8080); // 监听指定端口
         System.out.println("server is running...");
-        Socket sock = ss.accept();
-        System.out.println("connected from " + sock.getRemoteSocketAddress());
-        Thread tReceive = new Receive(sock);
-        tReceive.start();
-        output = sock.getOutputStream();
-        writer =  new BufferedWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8));
-        writer.write(userName);
-        writer.newLine();
-        writer.flush();
+        System.out.println("本机IP: " + InetAddress.getLocalHost().getHostAddress());
+        while (true) {
+            Socket sock = ss.accept();
+            System.out.println("connected from " + sock.getRemoteSocketAddress());
+            Thread tReceive = new Receive(sock);
+            tReceive.start();
+            output = sock.getOutputStream();
+            writer = new BufferedWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8));
+            writer.write(userName);
+            writer.newLine();
+            writer.flush();
+        }
     }
     public static void send(String s) throws IOException {
         writer.write(s);

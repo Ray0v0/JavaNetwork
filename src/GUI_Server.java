@@ -26,9 +26,9 @@ public class GUI_Server implements ActionListener {
         mainFrame.setSize(600, 400);
         monitorArea = new JTextArea(15, 20);
 //        textArea.setEnabled(false);
-        monitorArea.setFont(new java.awt.Font("MS Gothic", Font.BOLD, 18));
+        monitorArea.setFont(new java.awt.Font("宋体", Font.BOLD, 18));
         textArea = new JTextArea(5, 20);
-        textArea.setFont(new java.awt.Font("MS Gothic", Font.PLAIN, 16));
+        textArea.setFont(new java.awt.Font("宋体", Font.PLAIN, 16));
         scroller = new JScrollPane(monitorArea);
         scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);

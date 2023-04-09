@@ -7,17 +7,22 @@ public class Client {
     static GUI gui;
     static OutputStream output;
     static BufferedWriter writer;
+    static String ip;
     private static String userName = "Ray";
     public static void main(String[] args) throws IOException {
+        ip = "10.13.249.60";
         gui = new GUI();
         gui.go();
 //        Socket sock = new Socket("121.5.129.39", 8080); // 连接指定服务器和端口
 //        Socket sock = new Socket("10.13.207.93", 8080);
-        Socket sock = new Socket("10.13.249.60", 8080);
+
+    }
+    public static void run() throws IOException {
+        Socket sock = new Socket(ip, 8080);
         Thread tReceive = new Receive(sock);
         tReceive.start();
         output = sock.getOutputStream();
-        writer =  new BufferedWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8));
+        writer = new BufferedWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8));
         writer.write(userName);
         writer.newLine();
         writer.flush();
@@ -26,6 +31,12 @@ public class Client {
         writer.write(s);
         writer.newLine();
         writer.flush();
+    }
+    public static void setUserName(String userName1) {
+        userName = userName1;
+    }
+    public static void setIP(String ip1) {
+        ip = ip1;
     }
 
     static class Receive extends Thread {
