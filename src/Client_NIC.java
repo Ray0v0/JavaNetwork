@@ -15,8 +15,7 @@ public class Client_NIC {
     static MainGUI mainGUI;
     public static void main(String[] args) throws IOException {
         String ip;
-        ip = "10.27.40.151";
-//        ip = "121.5.129.39";
+        ip = "121.5.129.39";
         Socket socket = new Socket(ip, 8080);
         reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
         writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
