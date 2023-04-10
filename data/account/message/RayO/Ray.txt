@@ -1,0 +1,3 @@
+[Ray] 你好
+[RayO] 你好
+[Ray] 你是RayO，我是Ray
