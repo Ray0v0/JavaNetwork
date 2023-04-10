@@ -162,6 +162,7 @@ class Connect extends Thread {
         BufferedReader fFriendsReader = new BufferedReader(new FileReader(fFriends));
         String line = fFriendsReader.readLine();
         StringBuilder sb = new StringBuilder();
+//        sb.append("begin ");
         if (line != null) {
             sb.append(line);
             while ((line = fFriendsReader.readLine()) != null) {
@@ -169,6 +170,7 @@ class Connect extends Thread {
                 sb.append(line);
             }
         }
+//        sb.append(" end.");
         fFriendsReader.close();
         writer.write(sb.toString());
         writer.newLine();

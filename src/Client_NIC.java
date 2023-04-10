@@ -8,6 +8,8 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
+import static java.lang.Thread.*;
+
 public class Client_NIC {
     static BufferedReader reader;
     static BufferedWriter writer;
@@ -16,6 +18,7 @@ public class Client_NIC {
     public static void main(String[] args) throws IOException {
         String ip;
         ip = "121.5.129.39";
+//        ip = "10.27.40.151";
         Socket socket = new Socket(ip, 8080);
         reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
         writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
@@ -32,17 +35,35 @@ public class Client_NIC {
         reader.readLine();
         mainGUI.run();
     }
+    private static class TUpdate extends Thread {
+        @Override
+        public void run() {
+            System.out.println("a");
+            while (true) {
+                try {
+                    sleep(1000);
+                } catch (InterruptedException ignore) { }
+                try {
+//                    System.out.println("a");
+                    mainGUI.updateReceiveArea();
+                } catch (IOException ignore) { }
+            }
+        }
+
+    }
     private static void login(String command) throws IOException{
         writer.write(command);
         writer.newLine();
         writer.flush();
         String commandBack = reader.readLine();
         MessageGUI messageGUI = new MessageGUI(commandBack);
-//        messageGUI.run();
+        messageGUI.run();
         if (commandBack.equals("Log in successfully.")) {
             gateGUI.hide();
             mainGUI = new MainGUI(command.split(" ")[1]);
             mainGUI.run();
+            TUpdate tUpdate = new TUpdate();
+            tUpdate.start();
         }
     }
     private static void register(String command) throws IOException {
@@ -199,11 +220,15 @@ public class Client_NIC {
         public void run() throws IOException {
             friends = Client_NIC.getFriends(username);
             friendNum = friends.length;
+            if (friends[0].equals("") && friendNum == 1) {
+                friendNum = 0;
+                friends = new String[0];
+            }
 
             friendButtons = new JButton[friendNum];
             JPanel friendsPanel = new JPanel();
             friendsPanel.setLayout(new BoxLayout(friendsPanel, BoxLayout.Y_AXIS));
-            for (int i = 0; i < friends.length; i++) {
+            for (int i = 0; i < friendNum; i++) {
                 friendButtons[i] = new JButton("%s".formatted(friends[i]));
                 friendButtons[i].setContentAreaFilled(false);
                 friendButtons[i].setBorderPainted(false);
@@ -217,7 +242,7 @@ public class Client_NIC {
 
             receiveArea = new JTextArea(20, 20);
             if (friendNum != 0) {
-                updateReceiveArea(friends[friendPointer]);
+                updateReceiveArea();
             }
 
             sendArea = new JTextArea(15, 20);
@@ -243,8 +268,8 @@ public class Client_NIC {
             mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             mainFrame.setVisible(true);
         }
-        private void updateReceiveArea(String friendName) throws IOException {
-            String receives = Client_NIC.getReceives(username, friendName);
+        private void updateReceiveArea() throws IOException {
+            String receives = Client_NIC.getReceives(username, friends[friendPointer]);
             receiveArea.setText(receives);
             mainFrame.repaint();
         }
@@ -258,7 +283,7 @@ public class Client_NIC {
                     }
                 }
                 try {
-                    updateReceiveArea(friends[friendPointer]);
+                    updateReceiveArea();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
